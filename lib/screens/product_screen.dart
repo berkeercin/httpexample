@@ -27,8 +27,21 @@ class _ProductScreenState extends State<ProductScreen> {
     final dataAsJson = json.decode(response.body);
     final List products = dataAsJson['products'];
     for (var element in products) {
-      productList.add(
-          Product(title: element['title'], thumbnail: element['thumbnail']));
+      if (element['price'] is int) {
+        element['price'] = element['price'].toDouble();
+      }
+
+      productList.add(Product(
+          id: element["id"],
+          brand: element["brand"],
+          category: element["category"],
+          description: element["description"],
+          discountPercentage: element["discountPercentage"],
+          images: element["images"],
+          price: element["price"],
+          stock: element["stock"],
+          thumbnail: element["thumbnail"],
+          title: element["title"]));
     }
     setState(() {
       rawProductList = products;
@@ -37,12 +50,17 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-          itemCount: rawProductList.length,
-          itemBuilder: (ctx, index) => ProductItem(
-              imgUrl: productList[index].thumbnail,
-              title: productList[index].title)),
-    );
+    return ListView.builder(
+        itemCount: rawProductList.length,
+        itemBuilder: (ctx, index) => ProductItem(
+            brand: productList[index].brand,
+            category: productList[index].category,
+            description: productList[index].description,
+            discountPercentage: productList[index].discountPercentage,
+            images: productList[index].images,
+            price: productList[index].price,
+            stock: productList[index].stock,
+            imgUrl: productList[index].thumbnail,
+            title: productList[index].title));
   }
 }
